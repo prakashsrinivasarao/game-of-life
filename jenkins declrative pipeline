@@ -1,20 +1,20 @@
 pipeline {
-    agent {label 'jdk_8'} 
+    agent {label 'jdk_8'}
     options {
-        retrt(3)
-        timeout(time:30, unit: 'MINUTES')
+        retry(3)
+        timeout(time: 30, units: 'MINUTES' )
     }
     triggers {
         pollSCM('* * * * *')
     }
     tools {
-        'jdk_8'
+        jdk 'jdk_8'
     }
     stages {
-        stage('code') {
+        stages('code') {
             steps {
                 git url: 'https://github.com/prakashsrinivasarao/game-of-life.git',
-                 branch:'master'
+                branch: 'master'
             }
         }
         stages('package') {
@@ -25,7 +25,10 @@ pipeline {
         stages('report') {
             steps {
                 junit testresults: '**/surefire-reports/TEST-*.xml'
-                archiveArtifacts artifacts: '**/target/gameoflife.war' 
+                achiveArtifacts artifacts: '**target/gameoflife.war'
             }
         }
     }
+    
+    
+}
