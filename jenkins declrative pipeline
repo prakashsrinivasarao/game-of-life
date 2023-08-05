@@ -11,21 +11,21 @@ pipeline {
         'jdk_8'
     }
     stages {
-        stages('code') {
-            git url: 'https://github.com/prakashsrinivasarao/game-of-life.git',
-
+        stage('code') {
+            steps {
+                git url: 'https://github.com/prakashsrinivasarao/game-of-life.git',
+                 branch:'master'
+            }
+        }
+        stages('package') {
+            steps {
+                sh script: 'mvn clean package'
+            }
+        }
+        stages('report') {
+            steps {
+                junit testresults: '**/surefire-reports/TEST-*.xml'
+                archiveArtifacts artifacts: '**/target/gameoflife.war' 
+            }
         }
     }
-    stages('package') {
-        steps {
-            sh script: 'mvn clean package'
-        }
-    }
-    stages('reports') {
-        steps {
-            junit testresults: '**/surefire-repots/TEST-*.xml'
-            archiveArtifacts artifacts: '**/target/gameoflife.war'
-        }
-    }
-
-}
