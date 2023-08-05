@@ -1,0 +1,31 @@
+pipeline {
+    agent {label 'jdk_8'} 
+    options {
+        retrt(3)
+        timeout(time:30, unit: 'MINUTES')
+    }
+    triggers {
+        pollSCM('* * * * *')
+    }
+    tools {
+        'jdk_8'
+    }
+    stages {
+        stages('code') {
+            git url: 'https://github.com/prakashsrinivasarao/game-of-life.git',
+
+        }
+    }
+    stages('package') {
+        steps {
+            sh script: 'mvn clean package'
+        }
+    }
+    stages('reports') {
+        steps {
+            junit testresults: '**/surefire-repots/TEST-*.xml'
+            archiveArtifacts artifacts: '**/target/gameoflife.war'
+        }
+    }
+
+}
